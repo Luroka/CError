@@ -12,6 +12,7 @@ using namespace sf;
 int gameOver();
 int gameLoop();
 int clicker();
+int boxCouter();
 int newWindow();
 void initRandom();
 int getRandInt(int min, int max);
@@ -30,6 +31,16 @@ int openWindows = 0;
 int finishedWindows = 0;
 Font font;
 std::vector<std::thread> threads;
+
+// Liste von Farben
+static std::vector<Color> colors = {
+    Color::Color(33,133,346,255), 
+    Color::Color(224,151,16,255), 
+    Color::Color(224,92,16,255),
+    Color::Color(0,184,70,255),
+    Color::Color(184,0,184,255),
+    Color::Color(125,0,184,255),
+};
 
 #pragma region Manager
 int main()
@@ -128,8 +139,9 @@ int newWindow()
     openWindows += 1;
 
     //Zufälliges Fenster öffnen
-    int window = getRandInt(0,0);
+    int window = getRandInt(1,1);
     if (window == 0) threads.push_back(std::thread(clicker));
+    if (window == 1) threads.push_back(std::thread(boxCouter));
 
     return 0;
 }
@@ -169,7 +181,7 @@ Text createDefaultHeaderText(Vector2u windowSize, const std::string& string)
     const int textSize = 24;
     Text text(font, string, textSize);
     text.setFillColor(Color::Black);
-    sf::FloatRect textBounds = text.getLocalBounds();
+    FloatRect textBounds = text.getLocalBounds();
     text.setOrigin({textBounds.size.x / 2,textBounds.size.y / 2});
     float x = (windowSize.x / 2);
     float y = headerYPosition + (headerHeight / 2) - (textSize / 2);
@@ -186,16 +198,6 @@ int clicker()
     
     int rectAmount = getRandInt(10, 30);
     std::vector<Button> wrongButtons;
-
-    // Liste von Farben
-    std::vector<Color> colors = {
-        Color::Color(33,133,346,255), 
-        Color::Color(224,151,16,255), 
-        Color::Color(224,92,16,255),
-        Color::Color(0,184,70,255),
-        Color::Color(184,0,184,255),
-        Color::Color(125,0,184,255),
-    };
 
     //Rechtecke erstellen und random positionieren
     int rectHeight = 40;
@@ -261,6 +263,78 @@ int clicker()
     return 0;
 }
 
+int boxCouter() 
+{
+    RenderWindow window = createDefaultWindow("box count");
+    RectangleShape headerRect = createDefaultHeaderRect(window.getSize(), 300);
+    Text headerText = createDefaultHeaderText(window.getSize(), "count all boxes");
+
+    //Zähler-Text erstellen
+    const int textSize = 24;
+    Text numberText(font, "0", textSize);
+    numberText.setFillColor(Color::White);
+    FloatRect textBounds = numberText.getLocalBounds();
+    numberText.setOrigin({textBounds.size.x / 2,textBounds.size.y / 2});
+    float x = (window.getSize().x / 2);
+    float y = window.getSize().y - 50;
+    numberText.setPosition({x, y});
+
+    int rectAmount = getRandInt(5, 15);
+    std::vector<RectangleShape> rects;
+
+    //Rechtecke erstellen und random positionieren
+    float rectHeight = 40;
+    float rectWidth = 40;
+    int colorSize = colors.size();
+    for (int i = 0; i < rectAmount; ++i) {
+        float x = getRandInt(0, (windowWidth - rectWidth));
+        float y = getRandInt(90, (windowHeight - rectHeight - textSize));
+        RectangleShape rect(Vector2f(rectWidth, rectHeight));
+        rect.setOrigin({rectWidth / 2, rectHeight / 2});
+        rect.setPosition({x,y});
+        rect.setFillColor(colors.at(i%colorSize));
+        rects.push_back(rect);
+    }
+
+    int couter = 0;
+
+    bool firstFrame = true; //Damit das Fenster einmal am Anfang lädt auch wenn es nicht im Fokus ist
+    while (window.isOpen())
+    {
+        //Event loop, damit es nicht zu Fehlern kommt
+        while (const std::optional event = window.pollEvent())
+        {        }
+        
+        if (active == false) 
+        {
+            window.close();
+        }
+
+        if (window.hasFocus() || firstFrame)
+        {
+            firstFrame = false;
+
+            numberText.setString(std::to_string(couter));
+
+            if (couter == rectAmount && Keyboard::isKeyPressed(Keyboard::Key::Enter))
+
+            //darstellen
+            window.clear();
+            window.draw(numberText);
+            for (RectangleShape& r : rects) {
+                window.draw(r);
+            }  
+            window.draw(headerRect);
+            window.draw(headerText);
+            window.display();
+        }
+    }
+
+    openWindows -= 1;
+    finishedWindows += 1;
+    return 0;
+}
+
 #pragma endregion
 
 
@@ -290,6 +364,8 @@ int windowPrefab()
             //darstellen
             window.clear();
 
+            window.draw(headerRect);
+            window.draw(headerText);
             window.display();
         }
     }
