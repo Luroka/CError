@@ -2,6 +2,8 @@
 #include <iostream>
 #include <thread>
 #include <vector>
+#include <SFML/Window.hpp>
+#include <Windows.h> // Für SetWindowPos()
 #include <random>
 #include <ctime>   // Für time()
 #include "Button.hpp"
@@ -13,6 +15,7 @@ int gameOver();
 int gameLoop();
 int clicker();
 int boxCouter();
+int painter(); 
 int newWindow();
 void initRandom();
 int getRandInt(int min, int max);
@@ -110,7 +113,7 @@ int gameOver()
 int gameLoop()
 {
     active = true;
-    float difTime = 2;
+    float difTime = 4;
 
     Clock clock;
     clock.start();
@@ -142,6 +145,7 @@ int newWindow()
     int window = getRandInt(1,1);
     if (window == 0) threads.push_back(std::thread(clicker));
     if (window == 1) threads.push_back(std::thread(boxCouter));
+    if (window == 2) threads.push_back(std::thread(painter));
 
     return 0;
 }
@@ -160,6 +164,11 @@ RenderWindow createDefaultWindow(const std::string& name)
     int x = getRandInt(0, (screenWidth - windowWidth)); // std::rand() % (screenWidth - windowWidth);
     int y = getRandInt(0, (screenHeight - windowHeight)); // % (screenHeight - windowHeight);
     window.setPosition({x,y});
+
+    WindowHandle wHandle = window.getNativeHandle();
+    //window.setMaximumSize({windowWidth, windowHeight});
+    //window.setMinimumSize({windowWidth, windowHeight});
+    
 
     return window;
 }
@@ -282,6 +291,11 @@ int boxCouter()
     int rectAmount = getRandInt(5, 15);
     std::vector<RectangleShape> rects;
 
+    //Buttons 
+    Button moreButton(x + 50, y - 10, 30, 30, ">", Color::Blue);
+    Button lessButton(x - 50, y - 10, 30, 30, "<", Color::Blue);
+    Button confirmButton(x, y + 20, 80, 30, "confirm", Color::Blue);
+
     //Rechtecke erstellen und random positionieren
     float rectHeight = 40;
     float rectWidth = 40;
@@ -296,7 +310,7 @@ int boxCouter()
         rects.push_back(rect);
     }
 
-    int couter = 0;
+    int counter = 0;
 
     bool firstFrame = true; //Damit das Fenster einmal am Anfang lädt auch wenn es nicht im Fokus ist
     while (window.isOpen())
@@ -314,18 +328,152 @@ int boxCouter()
         {
             firstFrame = false;
 
-            numberText.setString(std::to_string(couter));
+            if (counter == rectAmount && Keyboard::isKeyPressed(Keyboard::Key::Enter))
 
-            if (couter == rectAmount && Keyboard::isKeyPressed(Keyboard::Key::Enter))
+            if (moreButton.isTouched(window))// && counter < 99)
+            {
+                counter += 1;
+                std::cout << "MORE_Button";
+            }
+            if (lessButton.clickDown(window) && counter > 0)
+            {
+                counter -= 1;
+            }
+            if (confirmButton.clickDown(window))
+            {
+                if (counter == rectAmount)
+                {
+                    window.close();
+                }
+            }
+
+            numberText.setString(std::to_string(counter));
 
             //darstellen
             window.clear();
-            window.draw(numberText);
             for (RectangleShape& r : rects) {
                 window.draw(r);
-            }  
+            }
+            
+            lessButton.draw(window);
+            moreButton.draw(window);
+            confirmButton.draw(window);
+            window.draw(numberText);
             window.draw(headerRect);
             window.draw(headerText);
+            window.display();
+        }
+    }
+
+    openWindows -= 1;
+    finishedWindows += 1;
+    return 0;
+}
+
+int painter() 
+{
+    RenderWindow window = createDefaultWindow("painter");
+    RectangleShape headerRect = createDefaultHeaderRect(window.getSize());
+    Text headerText = createDefaultHeaderText(window.getSize(), "use the arrows to color all rects");
+    
+    
+    int rectAmount = getRandInt(3, 10);
+    std::vector<RectangleShape> rects;
+
+    //Rechtecke erstellen und random positionieren
+    float rectHeight = 40;
+    float rectWidth = 40;
+    int colorSize = colors.size();
+    for (int i = 0; i < rectAmount; ++i) {
+        float x = getRandInt(0, (windowWidth - rectWidth));
+        float y = getRandInt(90, (windowHeight - rectHeight));
+        RectangleShape rect(Vector2f(rectWidth, rectHeight));
+        rect.setOrigin({rectWidth / 2, rectHeight / 2});
+        rect.setPosition({x,y});
+        rect.setFillColor(colors.at(i%colorSize));
+        rects.push_back(rect);
+    }
+
+    Color brushColor = Color::Color(87, 81, 250);
+    
+
+    //auf freepik.com von Arslan Haider
+    sf::Texture texture;
+    if (!texture.loadFromFile("./assets/brush.png", false, sf::IntRect({0, 0}, {256, 256})))
+    {
+        std::cout << "Error beim laden von brush.png.";
+    }
+
+    
+    Sprite brush(texture);
+    brush.setTexture(texture);
+    brush.setOrigin({128.f, 128.f});
+    brush.setScale({0.2f, 0.2f});
+    brush.setPosition({250.f, 500.f-128.f});
+    
+    int counter = 0;
+
+    bool firstFrame = true; //Damit das Fenster einmal am Anfang lädt auch wenn es nicht im Fokus ist
+    while (window.isOpen())
+    {
+        //Event loop, damit es nicht zu Fehlern kommt
+        while (const std::optional event = window.pollEvent())
+        {        }
+        
+        if (active == false) 
+        {
+            window.close();
+        }
+
+        if (window.hasFocus() || firstFrame)
+        {
+            firstFrame = false;
+
+            //darstellen
+            window.clear();
+            
+            float speed = 5;
+            if (Keyboard::isKeyPressed(Keyboard::Key::Up))
+            {
+                brush.move({0, -speed});
+            }
+            else if (Keyboard::isKeyPressed(Keyboard::Key::Down))
+            {
+                brush.move({0, speed});
+            }
+            if (Keyboard::isKeyPressed(Keyboard::Key::Right))
+            {
+                brush.move({speed, 0});
+            }
+            else if (Keyboard::isKeyPressed(Keyboard::Key::Left))
+            {
+                brush.move({-speed, 0});
+            }
+
+            //Rects färben falls der Pinsel sie anmalt
+            for (RectangleShape& r : rects) {
+                if (r.getFillColor() != brushColor)
+                {
+                    if (brush.getGlobalBounds().findIntersection(r.getGlobalBounds()))
+                    {
+                        r.setFillColor(brushColor);
+                        counter += 1;
+                    }
+                }
+            }
+
+            if (counter >= rectAmount)
+            {
+                window.close();
+                return 0;
+            }
+
+            window.draw(headerRect);
+            window.draw(headerText);
+            for (RectangleShape& r : rects) {
+                window.draw(r);
+            }
+            window.draw(brush);
             window.display();
         }
     }
