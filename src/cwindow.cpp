@@ -7,6 +7,7 @@
 #include <ctime>
 #include <SFML/Graphics.hpp>
 #include "cwindow.hpp"
+#include "button.hpp"
 #include "globals.hpp"
 using namespace sf;
 
@@ -26,7 +27,6 @@ cWindow::cWindow() {
         Color::Color(184,0,184,255),
         Color::Color(125,0,184,255),
     };
-
 };
 
 RenderWindow cWindow::createDefaultWindow(const std::string& name)

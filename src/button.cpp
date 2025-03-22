@@ -6,6 +6,11 @@
 
 sf::Font Button::font;
 
+Button::Button()
+: text(font, "", 24)
+{
+    
+}
 
 Button::Button(float x, float y, float width, float height, const std::string& label, sf::Color color, sf::Color textColor, int Textsize) 
     : text(font, label, Textsize)
