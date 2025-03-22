@@ -24,7 +24,14 @@ class BoxCounter : public cWindow {
     public:
         BoxCounter();
         void start();
-    };
+};
     
-
+class Painter : public cWindow {
+    protected:
+    
+    public:
+        Painter();
+        void start();
+};
+            
 #endif
