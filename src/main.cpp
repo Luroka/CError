@@ -24,7 +24,6 @@ int painter();
 int getRandInt(int min, int max);
 
 const int maxWindows = 7;
-//std::mt19937 rng; //random Funktion
 static Font font;
 std::vector<std::thread> threads;
 
@@ -78,17 +77,7 @@ int main()
 
     gameOver();
 }
-/*
-void initRandom() {
-    std::random_device rd;
-    rng.seed(rd()); 
-}
 
-int getRandInt(int min, int max) {
-    std::uniform_int_distribution<int> dist(min, max); // Gleichverteilung
-    return dist(rng);
-}
-*/
 int gameOver()
 {
     std::cout << "Game Over!" << std::endl;
@@ -127,7 +116,7 @@ int newWindow()
     openWindows += 1;
 
     //Zufälliges Fenster öffnen
-    int window = getRandInt(1,1);
+    int window = getRandInt(0,2);
     if (window == 0) threads.push_back(std::thread(clicker));
     if (window == 1) threads.push_back(std::thread(boxCounter));
     if (window == 2) threads.push_back(std::thread(painter));

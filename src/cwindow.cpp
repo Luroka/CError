@@ -1,3 +1,4 @@
+
 //cwindow.cpp
 #include <iostream>
 #include <string>
@@ -9,24 +10,23 @@
 #include "globals.hpp"
 using namespace sf;
 
-// Fenster Grundfunktionen
-
-float windowHeight = 500;
-float windowWidth = 500;
-int headerYPosition = 50;
-int headerHeight = 40;
-// Liste von Farben
-std::vector<Color> colors = {
-    Color::Color(33,133,246,255), 
-    Color::Color(224,151,16,255), 
-    Color::Color(224,92,16,255),
-    Color::Color(0,184,70,255),
-    Color::Color(184,0,184,255),
-    Color::Color(125,0,184,255),
-};
-
 cWindow::cWindow() {
-    if (!font.openFromFile("./assets/RobotoMono-Regular.ttf")) std::cerr << "Cannot load font" << std::endl;
+    if (!font.openFromFile("./assets/RobotoMono-Regular.ttf")) std::cerr << "Cannot load font" << std::endl;// Fenster Grundfunktionen
+
+    windowHeight = 500;
+    windowWidth = 500;
+    headerYPosition = 50;
+    headerHeight = 40;
+    // Liste von Farben
+    colors = {
+        Color::Color(33,133,246,255), 
+        Color::Color(224,151,16,255), 
+        Color::Color(224,92,16,255),
+        Color::Color(0,184,70,255),
+        Color::Color(184,0,184,255),
+        Color::Color(125,0,184,255),
+    };
+
 };
 
 RenderWindow cWindow::createDefaultWindow(const std::string& name)

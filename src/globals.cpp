@@ -16,6 +16,7 @@ void initRandom() {
 }
 
 int getRandInt(int min, int max) {
+    if (min > max) return min;
     std::uniform_int_distribution<int> dist(min, max);
     return dist(rng);
 }

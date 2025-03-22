@@ -166,6 +166,7 @@ Painter::Painter() : cWindow()
     float rectHeight = 40;
     float rectWidth = 40;
     int colorSize = colors.size();
+    std::cout << "CSize" << colorSize << std::endl;
     for (int i = 0; i < rectAmount; ++i) {
         float x = getRandInt(0, (windowWidth - rectWidth));
         float y = getRandInt(90, (windowHeight - rectHeight));
@@ -176,9 +177,9 @@ Painter::Painter() : cWindow()
         rects.push_back(rect);
     }
 
+
     Color brushColor = Color::Color(87, 81, 250);
     
-
     //auf freepik.com von Arslan Haider
     sf::Texture texture;
     if (!texture.loadFromFile("./assets/brush.png", false, sf::IntRect({0, 0}, {256, 256})))
@@ -186,7 +187,6 @@ Painter::Painter() : cWindow()
         std::cout << "Error beim laden von brush.png.";
     }
 
-    
     Sprite brush(texture);
     brush.setTexture(texture);
     brush.setOrigin({128.f, 128.f});
