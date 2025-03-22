@@ -3,44 +3,29 @@
 #include <thread>
 #include <vector>
 #include <random>
-#include <ctime>   // Für time()
+#include <ctime>
 #include "Button.hpp"
+#include "cwindow.hpp"
+#include "windows.hpp"
+#include "globals.hpp"
 
 using namespace sf;
 
 
-int gameOver();
-int gameLoop();
-int clicker();
-int boxCouter();
-int newWindow();
+void gameOver();
+void gameLoop();
+void newWindow();
 void initRandom();
+void clicker();
+void boxCounter();
 int getRandInt(int min, int max);
-RenderWindow createDefaultWindow(const std::string& name);
-Text createDefaultHeaderText(Vector2u windowSize, const std::string& string);
-RectangleShape createDefaultHeaderRect(RenderWindow window, int Width=300);
 
-const int windowHeight = 500;
-const int windowWidth = 500;
 const int maxWindows = 7;
-const int headerYPosition = 50;
-const int headerHeight = 40;
-bool active = false;
-std::mt19937 rng; //random Funktion
-int openWindows = 0;
-int finishedWindows = 0;
-Font font;
+//std::mt19937 rng; //random Funktion
+static Font font;
 std::vector<std::thread> threads;
 
-// Liste von Farben
-static std::vector<Color> colors = {
-    Color::Color(33,133,346,255), 
-    Color::Color(224,151,16,255), 
-    Color::Color(224,92,16,255),
-    Color::Color(0,184,70,255),
-    Color::Color(184,0,184,255),
-    Color::Color(125,0,184,255),
-};
+
 
 #pragma region Manager
 int main()
@@ -90,7 +75,7 @@ int main()
 
     gameOver();
 }
-
+/*
 void initRandom() {
     std::random_device rd;
     rng.seed(rd()); 
@@ -100,14 +85,14 @@ int getRandInt(int min, int max) {
     std::uniform_int_distribution<int> dist(min, max); // Gleichverteilung
     return dist(rng);
 }
-
-int gameOver()
+*/
+void gameOver()
 {
     std::cout << "Game Over!" << std::endl;
-    return 0;
+    return;
 }
 
-int gameLoop()
+void gameLoop()
 {
     active = true;
     float difTime = 2;
@@ -131,65 +116,37 @@ int gameLoop()
         }
     }
 
-    return 0;
+    return;
 }
 
-int newWindow()
+void newWindow()
 {
     openWindows += 1;
 
     //Zufälliges Fenster öffnen
-    int window = getRandInt(1,1);
+    int window = 0; //getRandInt(0,0);
     if (window == 0) threads.push_back(std::thread(clicker));
-    if (window == 1) threads.push_back(std::thread(boxCouter));
+    if (window == 1) threads.push_back(std::thread(boxCounter));
 
-    return 0;
+    return;
+}
+
+void clicker() 
+{
+    Clicker clicker;
+}
+
+void boxCounter()
+{
+    BoxCounter boxCounter;
 }
 
 
 #pragma endregion
 
 #pragma region windows
-RenderWindow createDefaultWindow(const std::string& name)
-{
-    RenderWindow window = RenderWindow(sf::VideoMode({windowWidth, windowHeight}), name);
-    window.setFramerateLimit(144);
-    int screenWidth = sf::VideoMode::getDesktopMode().size.x;
-    int screenHeight = sf::VideoMode::getDesktopMode().size.y;
-    
-    int x = getRandInt(0, (screenWidth - windowWidth)); // std::rand() % (screenWidth - windowWidth);
-    int y = getRandInt(0, (screenHeight - windowHeight)); // % (screenHeight - windowHeight);
-    window.setPosition({x,y});
 
-    return window;
-}
-
-RectangleShape createDefaultHeaderRect(const Vector2u windowSize, int Width=400)
-{
-    int Height = headerYPosition;
-    RectangleShape rect(Vector2f(Width, Height));
-    rect.setFillColor(Color::White);
-    float x = (windowSize.x / 2) - (Width / 2);
-    float y = headerHeight;
-    rect.setPosition({x, y});
-
-    return rect;
-}
-
-Text createDefaultHeaderText(Vector2u windowSize, const std::string& string)
-{
-    const int textSize = 24;
-    Text text(font, string, textSize);
-    text.setFillColor(Color::Black);
-    FloatRect textBounds = text.getLocalBounds();
-    text.setOrigin({textBounds.size.x / 2,textBounds.size.y / 2});
-    float x = (windowSize.x / 2);
-    float y = headerYPosition + (headerHeight / 2) - (textSize / 2);
-    text.setPosition({x, y});
-
-    return text;
-}
-
+/*/
 int clicker() 
 {
     RenderWindow window = createDefaultWindow("Clicker");
@@ -334,10 +291,11 @@ int boxCouter()
     finishedWindows += 1;
     return 0;
 }
+*/
 
 #pragma endregion
 
-
+/*
 int windowPrefab() 
 {
     RenderWindow window = createDefaultWindow("WindowName");
@@ -374,3 +332,4 @@ int windowPrefab()
     finishedWindows += 1;
     return 0;
 }
+    */
