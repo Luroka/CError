@@ -75,6 +75,7 @@ Text cWindow::createDefaultHeaderText(Vector2u windowSize, const std::string& st
 {
     const int textSize = 24;
     Text text(font, string, textSize);
+    
     text.setFillColor(Color::Black);
     FloatRect textBounds = text.getLocalBounds();
     text.setOrigin({textBounds.size.x / 2,textBounds.size.y / 2});
