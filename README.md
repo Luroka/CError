@@ -1,10 +1,9 @@
-
 :blue_heart: :purple_heart: :green_heart: :heart:
 
 # :bangbang: C-Error :bangbang:
 
  
-Oh Hey!:wave:
+Oh Hey! :wave:
 
   ## Spielablauf
 When you start the game using the "start Game"-Button, the first window pops up. You must close it as quickly as possible by completing the task. As time passes, the windows pop up more quickly. As soon as 10 windows are open at once, you lose (sorry). The main menu then displays your score, the number of windows you managed to close.
@@ -23,4 +22,7 @@ When you start the game using the "start Game"-Button, the first window pops up.
 
 :small_orange_diamond: The beautiful brush was made by Arslan Haider, published on freepik.com.
 
-:small_orange_diamond: Throughout the development process, a well-known AI tool (ChatGPT) was used to assist with many small details. Also a large part of the Button class was written by ChatGPT, with the exception of the click-functions.
+:small_orange_diamond: Throughout the development process, a well-known AI tool (ChatGPT) was used to assist with many small        details. 
+   Also a large part of the Button class was written by ChatGPT, with the exception of the click-functions.
+
+:blue_heart: :purple_heart: :green_heart: :heart:
