@@ -44,7 +44,7 @@ int main()
 void openMenu()
 {
     //Fenster erstllen
-    auto menuWindow = RenderWindow(sf::VideoMode({500, 500}), "C-Error");
+    auto menuWindow = RenderWindow(sf::VideoMode({500, 500}), "C-Error", sf::Style::Titlebar | sf::Style::Close);
     menuWindow.setFramerateLimit(90);
 
     //Variablen & font setzen

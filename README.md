@@ -1,5 +1,3 @@
-:blue_heart: :purple_heart: :green_heart: :heart:
-
 # :bangbang: C-Error :bangbang:
 
  
@@ -7,6 +5,7 @@ Oh Hey! :wave:
 
   ## gameplay
 When you start the game using the "start Game"-Button, the first window pops up. You must close it as quickly as possible by completing the task. As time passes, the windows pop up more quickly. As soon as 10 windows are open at once, you lose (sorry). The main menu then displays your score, the number of windows you managed to close.
+(My score is 42, so far).
 
 :o: You can alwayse escape from the game, using ESCAPE.
  

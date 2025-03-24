@@ -32,7 +32,7 @@ cWindow::cWindow() {
 
 RenderWindow cWindow::createDefaultWindow(const std::string& name)
 {
-    RenderWindow window = RenderWindow(VideoMode({500, 500}), name);
+    RenderWindow window = RenderWindow(VideoMode({500, 500}), name, sf::Style::Titlebar | sf::Style::Close);
 
     window.setFramerateLimit(90);
     int screenWidth = VideoMode::getDesktopMode().size.x;
