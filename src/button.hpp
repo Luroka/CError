@@ -24,18 +24,6 @@ public:
     bool clickDown(sf::RenderWindow& window);
     void setActive(bool active);
     void setVisibility(bool Visibility);
-
-    // Copy Constructor
-    Button(const Button&) = default;
-
-    // Move Constructor
-    Button(Button&&) noexcept = default;
-
-    // Copy Assignment Operator
-    Button& operator=(const Button&) = default;
-
-    // Move Assignment Operator
-    Button& operator=(Button&&) noexcept = default;
 };
 
 #endif

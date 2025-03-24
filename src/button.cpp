@@ -38,6 +38,7 @@ Button::Button(float x, float y, float width, float height, const std::string& l
     text.setPosition({x, y});
 }
 
+//Button darstellen
 void Button::draw(sf::RenderWindow& window) 
 {
     if (!isVisible) return;

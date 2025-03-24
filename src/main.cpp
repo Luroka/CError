@@ -6,6 +6,7 @@
 #include <Windows.h> // Für SetWindowPos()
 #include <random>
 #include <ctime>
+#include <cmath>
 #include "Button.hpp"
 #include "cwindow.hpp"
 #include "windows.hpp"
@@ -13,14 +14,15 @@
 
 using namespace sf;
 
-int gameOver();
-int gameLoop();
-int newWindow();
-
+void gameOver();
+void gameLoop();
+void newWindow();
+void openMenu();
 void initRandom();
-int clicker();
-int boxCounter();
-int painter();
+void clicker();
+void boxCounter();
+void painter();
+void fillUp();
 int getRandInt(int min, int max);
 
 const int maxWindows = 7;
@@ -34,17 +36,62 @@ int main()
 {
     initRandom();
 
-    auto menuWindow = sf::RenderWindow(sf::VideoMode({500, 500}), "C-Error");
+    openMenu();
+
+    return 0;
+}
+
+void openMenu()
+{
+    //Fenster erstllen
+    auto menuWindow = RenderWindow(sf::VideoMode({500, 500}), "C-Error");
     menuWindow.setFramerateLimit(144);
 
-    if (!font.openFromFile("./assets/RobotoMono-Regular.ttf")) std::cerr << "Cannot load font" << std::endl;
+    //Variablen & font setzen
+    active = true;
+    float winMid = menuWindow.getSize().x / 2;
+    if (!font.openFromFile("./assets/RobotoMono-Regular.ttf")) std::cerr << "Cannot load font" << std::endl;  
 
-    Button startButton(300, 250, 200, 60, "Spiel Starten");
+    //Start Button
+    Button startButton(winMid, 250, 200, 60, "Spiel Starten");
+
+    //Titel text
+    Text title(font, "C-Error", 24);
+    title.setFillColor(Color::White);
+    FloatRect titleBounds = title.getLocalBounds();
+    title.setOrigin({titleBounds.size.x / 2, titleBounds.size.y / 2});
+    float y = 100;
+    title.setPosition({winMid, y});
+
+    //Score Text
+    Text textScore(font, "Your Score: " + std::to_string(finishedWindows), 16);
+    textScore.setFillColor(Color::White);
+    FloatRect textScoreBounds = textScore.getLocalBounds();
+    textScore.setOrigin({textScoreBounds.size.x / 2, textScoreBounds.size.y / 2});
+    y = 300;
+    textScore.setPosition({winMid, y});
+
+    //Escape text
+    Text text(font, "You can alwayse escape the game, using ESCAPE.", 16);
+    text.setFillColor(Color::White);
+    FloatRect textBounds = text.getLocalBounds();
+    text.setOrigin({textBounds.size.x / 2, textBounds.size.y / 2});
+    y = 350;
+    text.setPosition({winMid, y});
     
+
+    menuWindow.clear();
+    menuWindow.draw(title);
+    menuWindow.draw(textScore);
+    menuWindow.draw(text);
+    startButton.draw(menuWindow);
+    menuWindow.display();
+
     while (menuWindow.isOpen())
     {
         while (const std::optional event = menuWindow.pollEvent())
         {
+            //Fenster schließen
             if (event->is<sf::Event::Closed>() || Keyboard::isKeyPressed(Keyboard::Key::Escape))
             {
                 active = false;
@@ -52,20 +99,18 @@ int main()
             }
         }
 
+        //Spielstart durch Button Click
         if (startButton.clickDown(menuWindow))
         {
             menuWindow.close();
             gameLoop();
         }
-        if (Keyboard::isKeyPressed(Keyboard::Key::Space))
-        {
-            std::cout << getRandInt(0, 10) << getRandInt(0, 10) << getRandInt(0, 1) << std::endl;
-        }
-
-        menuWindow.clear();
-        startButton.draw(menuWindow);
-        menuWindow.display();
     }
+}
+
+void gameOver()
+{
+    std::cout << "Game Over!" << std::endl;
 
     //Es wird gewartet bis alle threads beendet sind
     for (auto& th : threads) {
@@ -75,252 +120,89 @@ int main()
         }
     }
 
-    gameOver();
+    openMenu();
 }
 
-int gameOver()
+void gameLoop()
 {
-    std::cout << "Game Over!" << std::endl;
-    return 1;
-}
-
-int gameLoop()
-{
+    //Variablen setzen
     active = true;
-    float difTime = 4;
+    float difTime = 5;
+    finishedWindows = 0;
 
+    //Uhr initialisieren und starten
     Clock clock;
     clock.start();
 
+    //Erstes Window erstellen
     newWindow();
 
+    //gameloop
     while (active)
     {
+        //Spiel abbrechen bei ESCAPE
         if (Keyboard::isKeyPressed(Keyboard::Key::Escape))
         {
             active = false;
         }
 
-        if (clock.getElapsedTime().asSeconds() > difTime && openWindows < maxWindows)
+        //Neues Window erstellen
+        if ((clock.getElapsedTime().asSeconds() > difTime && openWindows <= maxWindows) || openWindows == 0)
         {
+            //Game Over bedingung
+            if (openWindows >= maxWindows)
+            {
+                active = false;
+            }
+
             clock.restart();
             newWindow();
+
+            //Neue Zeit zum nächsten Fenster berechnen
+            difTime = static_cast<float>(pow(0.945, finishedWindows- 20)) + 1;
         }
     }
 
-    return 0;
+    gameOver();
 }
 
-int newWindow()
+void newWindow()
 {
     openWindows += 1;
 
     //Zufälliges Fenster öffnen
-    int window = getRandInt(0,2);
+    int window = getRandInt(0,3);
     if (window == 0) threads.push_back(std::thread(clicker));
     if (window == 1) threads.push_back(std::thread(boxCounter));
     if (window == 2) threads.push_back(std::thread(painter));
+    if (window == 3) threads.push_back(std::thread(fillUp));
     
-    return 0;
+    return;
 }
 
-int clicker() 
+void clicker() 
 {
     Clicker clicker;
-    return 0;
 }
 
-int boxCounter()
+void boxCounter()
 {
     BoxCounter boxCounter;
-    return 0;
 }
 
-int painter()
+void painter()
 {
     Painter painter;
-    return 0;
+}
+
+void fillUp()
+{
+    FillUp fillUp;
 }
 
 
 #pragma endregion
 
-#pragma region windows
-
-/*/
-int clicker() 
-{
-    RenderWindow window = createDefaultWindow("Clicker");
-    RectangleShape headerRect = createDefaultHeaderRect(window.getSize());
-    Text headerText = createDefaultHeaderText(window.getSize(), "Click on the blue rect!");
-    
-    int rectAmount = getRandInt(10, 30);
-    std::vector<Button> wrongButtons;
-
-    //Rechtecke erstellen und random positionieren
-    int rectHeight = 40;
-    int rectWidth = 40;
-    int colorSize = colors.size();
-    for (int i = 0; i < rectAmount; ++i) {
-        //falsche Button setzen
-        float x = getRandInt(0, (windowWidth - rectWidth));
-        float y = getRandInt(90, (windowHeight - rectHeight));
-        Button button(x,y, rectWidth, rectHeight, "", colors.at(i%colorSize));
-        wrongButtons.push_back(button);
-    }
-
-    //richtigen Button setzen
-    float x = getRandInt(0, (windowWidth - rectWidth));
-    float y = getRandInt(90, (windowHeight - rectHeight));
-    Button rightButton(x,y, rectWidth, rectHeight, "", Color::Blue);
-
-    bool firstFrame = true; //Damit das Fenster einmal am Anfang lädt auch wenn es nicht im Fokus ist
-    while (window.isOpen())
-    {
-        //Event loop, damit es nicht zu Fehlern kommt
-        while (const std::optional event = window.pollEvent())
-        {        }
-
-        if (active == false) 
-        {
-            window.close();
-        }
-
-        if (window.hasFocus() || firstFrame)
-        {
-            firstFrame = false;
-            //Window schließen wenn der richtige Button gedrückt wurde
-            if (rightButton.clickDown(window))
-            {
-                window.close();
-            }
-
-            //geklickte Butons ausschalten
-            for (Button& b : wrongButtons) {
-                if (b.clickDown(window))
-                {
-                    b.setVisibility(false); 
-                    b.setActive(false);
-                }
-            }
-
-            //darstellen
-            window.clear();
-            for (Button& b : wrongButtons) {
-                b.draw(window);
-            }
-            rightButton.draw(window);
-            window.draw(headerRect);
-            window.draw(headerText);
-            window.display();
-        }
-    }
-
-    openWindows -= 1;
-    finishedWindows += 1;
-    return 0;
-}
-
-int boxCouter() 
-{
-    RenderWindow window = createDefaultWindow("box count");
-    RectangleShape headerRect = createDefaultHeaderRect(window.getSize(), 300);
-    Text headerText = createDefaultHeaderText(window.getSize(), "count all boxes");
-
-    //Zähler-Text erstellen
-    const int textSize = 24;
-    Text numberText(font, "0", textSize);
-    numberText.setFillColor(Color::White);
-    FloatRect textBounds = numberText.getLocalBounds();
-    numberText.setOrigin({textBounds.size.x / 2,textBounds.size.y / 2});
-    float x = (window.getSize().x / 2);
-    float y = window.getSize().y - 50;
-    numberText.setPosition({x, y});
-
-    int rectAmount = getRandInt(5, 15);
-    std::vector<RectangleShape> rects;
-
-    //Buttons 
-    Button moreButton(x + 50, y - 10, 30, 30, ">", Color::Blue);
-    Button lessButton(x - 50, y - 10, 30, 30, "<", Color::Blue);
-    Button confirmButton(x, y + 20, 80, 30, "confirm", Color::Blue);
-
-    //Rechtecke erstellen und random positionieren
-    float rectHeight = 40;
-    float rectWidth = 40;
-    int colorSize = colors.size();
-    for (int i = 0; i < rectAmount; ++i) {
-        float x = getRandInt(0, (windowWidth - rectWidth));
-        float y = getRandInt(90, (windowHeight - rectHeight - textSize));
-        RectangleShape rect(Vector2f(rectWidth, rectHeight));
-        rect.setOrigin({rectWidth / 2, rectHeight / 2});
-        rect.setPosition({x,y});
-        rect.setFillColor(colors.at(i%colorSize));
-        rects.push_back(rect);
-    }
-
-    int counter = 0;
-
-    bool firstFrame = true; //Damit das Fenster einmal am Anfang lädt auch wenn es nicht im Fokus ist
-    while (window.isOpen())
-    {
-        //Event loop, damit es nicht zu Fehlern kommt
-        while (const std::optional event = window.pollEvent())
-        {        }
-        
-        if (active == false) 
-        {
-            window.close();
-        }
-
-        if (window.hasFocus() || firstFrame)
-        {
-            firstFrame = false;
-
-            if (counter == rectAmount && Keyboard::isKeyPressed(Keyboard::Key::Enter))
-
-            if (moreButton.isTouched(window))// && counter < 99)
-            {
-                counter += 1;
-                std::cout << "MORE_Button";
-            }
-            if (lessButton.clickDown(window) && counter > 0)
-            {
-                counter -= 1;
-            }
-            if (confirmButton.clickDown(window))
-            {
-                if (counter == rectAmount)
-                {
-                    window.close();
-                }
-            }
-
-            numberText.setString(std::to_string(counter));
-
-            //darstellen
-            window.clear();
-            for (RectangleShape& r : rects) {
-                window.draw(r);
-            }
-            
-            lessButton.draw(window);
-            moreButton.draw(window);
-            confirmButton.draw(window);
-            window.draw(numberText);
-            window.draw(headerRect);
-            window.draw(headerText);
-            window.display();
-        }
-    }
-
-    openWindows -= 1;
-    finishedWindows += 1;
-    return 0;
-}
-*/
-
-#pragma endregion
 
 /*
 int windowPrefab() 
