@@ -45,7 +45,7 @@ void openMenu()
 {
     //Fenster erstllen
     auto menuWindow = RenderWindow(sf::VideoMode({500, 500}), "C-Error");
-    menuWindow.setFramerateLimit(144);
+    menuWindow.setFramerateLimit(90);
 
     //Variablen & font setzen
     active = true;
@@ -53,7 +53,7 @@ void openMenu()
     if (!font.openFromFile("./assets/RobotoMono-Regular.ttf")) std::cerr << "Cannot load font" << std::endl;  
 
     //Start Button
-    Button startButton(winMid, 250, 200, 60, "Spiel Starten");
+    Button startButton(winMid, 250, 200, 60, "start Game");
 
     //Titel text
     Text title(font, "C-Error", 24);

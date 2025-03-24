@@ -34,27 +34,14 @@ RenderWindow cWindow::createDefaultWindow(const std::string& name)
 {
     RenderWindow window = RenderWindow(VideoMode({500, 500}), name);
 
-    window.setFramerateLimit(144);
+    window.setFramerateLimit(90);
     int screenWidth = VideoMode::getDesktopMode().size.x;
     int screenHeight = VideoMode::getDesktopMode().size.y;
     
+    //position des Fensters
     int x = getRandInt(0, (screenWidth - windowWidth));
     int y = getRandInt(0, (screenHeight - windowHeight - 100));
     window.setPosition({x,y});
-
-    /*
-    #ifdef _WIN32
-        HWND hwnd = window.getNativeHandle();
-        // Fenster im minimierten Zustand starten
-        ShowWindow(hwnd, SW_SHOWMINNOACTIVE); 
-    #endif
-    */
-
-    // Kurze Verzögerung und Fokus zurückgeben
-    window.setVisible(false);
-    std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    window.setVisible(true);
-    window.requestFocus();
 
     return window;
 }
