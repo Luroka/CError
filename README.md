@@ -5,18 +5,18 @@
  
 Oh Hey! :wave:
 
-  ## Spielablauf
+  ## gameplay
 When you start the game using the "start Game"-Button, the first window pops up. You must close it as quickly as possible by completing the task. As time passes, the windows pop up more quickly. As soon as 10 windows are open at once, you lose (sorry). The main menu then displays your score, the number of windows you managed to close.
 
 :o: You can alwayse escape from the game, using ESCAPE.
  
- ## Installation
+ ## installation
 
 1. Download the code as a .zip file.
 2. Extract the .zip file.
 3. 
 
- ## Drittleistungen
+ ## Third Party's :confetti_ball:
 
 :small_orange_diamond: The font is from Google Fonts.
 
