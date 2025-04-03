@@ -14,7 +14,7 @@ When you start the game using the "start Game"-Button, the first window pops up.
 
 1. Download the code as a .zip file.
 2. Extract the .zip file.
-3. 
+3. doubleclick main.exe
 
  ## Third Party's :confetti_ball:
 
