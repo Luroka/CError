@@ -25,4 +25,6 @@ When you start the game using the "start Game"-Button, the first window pops up.
 :small_orange_diamond: Throughout the development process, a well-known AI tool (ChatGPT) was used to assist with many small        details. 
    Also a large part of the Button class was written by ChatGPT, with the exception of the click-functions.
 
+github Link: https://github.com/Luroka/CError
+
 :blue_heart: :purple_heart: :green_heart: :heart:
