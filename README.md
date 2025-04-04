@@ -26,5 +26,3 @@ When you start the game using the "start Game"-Button, the first window pops up.
    Also a large part of the Button class was written by ChatGPT, with the exception of the click-functions.
 
 :blue_heart: :purple_heart: :green_heart: :heart:
-
-github Link: https://github.com/Luroka/CError
